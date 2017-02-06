@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum VTDirection: Int {
+public enum VTDirection: Int {
     case horizontal
     case vertical
     
@@ -22,15 +22,15 @@ enum VTDirection: Int {
     }
 }
 
-@objc protocol VTAutoSlideViewDataSource: NSObjectProtocol{
+@objc public protocol VTAutoSlideViewDataSource: NSObjectProtocol{
     func configuration(cell: UICollectionViewCell, for index: Int)
 }
 
-@objc protocol VTAutoSlideViewDelegate {
+@objc public protocol VTAutoSlideViewDelegate {
     func slideView(_ slideView: VTAutoSlideView, didSelectItemAt index: Int)
 }
 
-class VTAutoSlideView: UIView {
+open class VTAutoSlideView: UIView {
     
     fileprivate static let cellIdentifier = "VTAutoSlideViewCell"
     
@@ -40,11 +40,11 @@ class VTAutoSlideView: UIView {
     
     private var isRegisterCell = false
     
-    @IBOutlet weak var dataSource: VTAutoSlideViewDataSource?
+    @IBOutlet open weak var dataSource: VTAutoSlideViewDataSource?
     
-    @IBOutlet weak var delegate: VTAutoSlideViewDelegate?
+    @IBOutlet open weak var delegate: VTAutoSlideViewDelegate?
     
-    var dataList = [Any]() {
+    open var dataList = [Any]() {
         didSet {
             guard isRegisterCell else {
                 fatalError("必须先调用register(cellClass:) 或 register(nib:)方法")
@@ -65,14 +65,14 @@ class VTAutoSlideView: UIView {
         setupCollectionView()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         self.direction = .horizontal
         super.init(coder: aDecoder)
         
         setupCollectionView()
     }
     
-    override func willMove(toSuperview newSuperview: UIView?) {
+    override open func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
         print("willMove to SuperView")
         DispatchQueue.main.async {
@@ -82,7 +82,7 @@ class VTAutoSlideView: UIView {
         }
     }
     
-    func register(cellClass: Swift.AnyClass?) {
+    open func register(cellClass: Swift.AnyClass?) {
         guard let cellClass = cellClass else {
             fatalError("cellClass 不能为空")
         }
@@ -90,7 +90,7 @@ class VTAutoSlideView: UIView {
         isRegisterCell = true
     }
     
-    func register(nib: UINib?) {
+    open func register(nib: UINib?) {
         guard let nib = nib else {
             fatalError("nib 不能为空")
         }
@@ -137,7 +137,7 @@ class VTAutoSlideView: UIView {
 }
 
 extension VTAutoSlideView {
-    func scrollViewDidScroll(_ scrollView: UIScrollView)
+    public func scrollViewDidScroll(_ scrollView: UIScrollView)
     {
         guard scrollView == collectionView else { return }
         var offset: CGFloat
@@ -181,7 +181,7 @@ extension VTAutoSlideView {
 }
 
 extension VTAutoSlideView: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: VTAutoSlideView.cellIdentifier, for: indexPath)
         
@@ -190,21 +190,21 @@ extension VTAutoSlideView: UICollectionViewDataSource {
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         return totalCount
     }
 }
 
 extension VTAutoSlideView: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         delegate?.slideView(self, didSelectItemAt: currentIndex(indexPath: indexPath))
     }
 }
 
 extension VTAutoSlideView: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
         return collectionView.bounds.size
     }
