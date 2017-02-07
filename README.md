@@ -1,8 +1,8 @@
 # VTAutoSlideView
 [![Version](https://img.shields.io/cocoapods/v/VTAutoSlideView.svg?style=flat)]()
-[![Version](https://img.shields.io/cocoapods/l/VTAutoSlideView.svg?style=flat)]()
+[![Version](https://img.shields.io/cocoapods/l/VTAutoSlideView.svg?style=flat)](https://github.com/VitoNYang/VTAutoSlideView/blob/master/LICENSE)
 [![Version](https://img.shields.io/cocoapods/p/VTAutoSlideView.svg?style=flat)]()
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ### 无论是在新闻APP、商城APP、音乐APP还是社交APP，我们经常能看到一种视图——无限循环滚动视图😆。
 ####这类视图通常用来展示照片、新闻、商品，常用度相信不用我再做过多阐述了🙂。所以这也是 *VTAutoSlideView* 产生的原因，接下来让我们看看怎么使用吧😊
 
@@ -37,8 +37,10 @@
 	    // 先注册你的 CollectionViewCell
 	    // 如果是Xib创建的用下面这个方法注册
 	    slideView.register(nib: UINib(nibName: "DisplayImageCell", bundle: nibBundle))
+	    
 	    // 或者如果是用代码创建的，用下面这个方法注册
 	    //slideView.register(cellClass: DisplayImageCell.self)
+	    
 	    slideView.dataSource = self
 	    slideView.dataList = imageList
 	}
@@ -49,10 +51,10 @@
 	extension ViewController: VTAutoSlideViewDataSource {
     	func configuration(cell: UICollectionViewCell, for index: Int)
     	{
-       	 guard let cell = cell as? DisplayImageCell else {
-            	return
-        	}
-        	cell.imageView.image = imageList[index]
+           guard let cell = cell as? DisplayImageCell else {
+            	   return
+        	 }
+        	 cell.imageView.image = imageList[index]
     	}
 	}
 	```
