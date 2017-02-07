@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "VTAutoSlideView"
-  s.version      = "0.0.1"
+  s.version      = "0.0.2"
   s.summary      = "A Loop Scroll View"
 
   s.description  = <<-DESC
