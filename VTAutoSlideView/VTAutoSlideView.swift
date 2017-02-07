@@ -40,11 +40,11 @@ open class VTAutoSlideView: UIView {
     
     private var isRegisterCell = false
     
-    @IBOutlet open weak var dataSource: VTAutoSlideViewDataSource?
+    @IBOutlet public weak var dataSource: VTAutoSlideViewDataSource?
     
-    @IBOutlet open weak var delegate: VTAutoSlideViewDelegate?
+    @IBOutlet public weak var delegate: VTAutoSlideViewDelegate?
     
-    open var dataList = [Any]() {
+    public var dataList = [Any]() {
         didSet {
             guard isRegisterCell else {
                 fatalError("必须先调用register(cellClass:) 或 register(nib:)方法")
@@ -57,7 +57,7 @@ open class VTAutoSlideView: UIView {
         return dataList.count > 0 ? dataList.count + 2 : 0
     }
     
-    init(direction: VTDirection = .horizontal, dataSource: VTAutoSlideViewDataSource) {
+    public init(direction: VTDirection = .horizontal, dataSource: VTAutoSlideViewDataSource) {
         self.direction = direction
         self.dataSource = dataSource
         super.init(frame: .zero)
@@ -74,7 +74,6 @@ open class VTAutoSlideView: UIView {
     
     override open func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
-        print("willMove to SuperView")
         DispatchQueue.main.async {
             if self.totalCount != 0 {
                 self.collectionView.selectItem(at: IndexPath.init(row: 1, section: 0), animated: false, scrollPosition: self.direction == .vertical ? .centeredVertically : .centeredHorizontally)
