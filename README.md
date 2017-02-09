@@ -79,7 +79,8 @@
     slideView.heightAnchor.constraint(equalToConstant: view.bounds.height * 0.5).isActive = true
 	```
 3. 实现VTAutoSlideViewDataSource 的 configuration(cell:for) 方法，配置你的 cell (参考Storyboard / Xib中的代码)
-4. 没有配置错的话，一切也已经可以正常运行起来了。	 
+4. 没有配置错的话，一切也已经可以正常运行起来了。
+ 
 ## Demo
 * 更新自 09/02/2017。 添加了自动轮播功能和添加了在纯代码中使用的Demo~ 🍻🍻
 * 更新自 07/02/2017。 暂只演示了在Storyboard 中的使用，后续将会补全在纯代码中的使用方法😋
