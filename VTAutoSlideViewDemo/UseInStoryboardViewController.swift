@@ -26,6 +26,7 @@ class UseInStoryboardViewController: UIViewController {
             slideView.dataSource = self
             slideView.delegate = self
             slideView.dataList = imageList
+            slideView.autoChangeTime = 1
         }
         
         func setupPageControl() {
