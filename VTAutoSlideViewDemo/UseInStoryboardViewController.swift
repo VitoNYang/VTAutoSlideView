@@ -15,7 +15,7 @@ class UseInStoryboardViewController: UIViewController {
     @IBOutlet weak var pageControl: UIPageControl!
     
     lazy var imageList = {
-        (1...4).map { UIImage(named: "0\($0)") }.filter { $0 != nil }.map{ $0! }
+        (1...4).flatMap { UIImage(named: "0\($0)") }
     }()
 
     override func viewDidLoad() {

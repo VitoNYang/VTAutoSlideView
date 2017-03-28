@@ -12,13 +12,22 @@ import UIKit
 public enum VTDirection: Int {
     case horizontal
     case vertical
-    
-    func toCollectionViewScrollDirection() -> UICollectionViewScrollDirection {
+   
+    var collectionViewScrollDirection: UICollectionViewScrollDirection {
         switch self {
         case .horizontal:
             return .horizontal
         case .vertical:
             return .vertical
+        }
+    }
+    
+    var scrollPosition: UICollectionViewScrollPosition {
+        switch self {
+        case .horizontal:
+            return .centeredHorizontally
+        case .vertical:
+            return .centeredVertically
         }
     }
 }
@@ -51,6 +60,24 @@ open class VTAutoSlideView: UIView {
     private var isRegisterCell = false
     
     private var timer: Timer?
+    
+    open override var bounds: CGRect {
+        didSet {
+            // bounds change handle
+            invalidateTimer()
+            collectionView.collectionViewLayout.invalidateLayout()
+            guard let indexPathForVisibleItem = collectionView.indexPathsForVisibleItems.first else {
+                return
+            }
+            DispatchQueue.main.async {
+                [weak self] in
+                if let weakSelf = self{
+                    weakSelf.collectionView.selectItem(at: indexPathForVisibleItem, animated: false, scrollPosition: weakSelf.direction.scrollPosition)
+                    weakSelf.setupTimer()
+                }
+            }
+        }
+    }
     
     /// 自动轮播的间距
     public var autoChangeTime: TimeInterval = 3 {
@@ -111,8 +138,9 @@ open class VTAutoSlideView: UIView {
     open override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
         DispatchQueue.main.async {
-            if self.totalCount != 0 {
-                self.collectionView.selectItem(at: IndexPath.init(row: 1, section: 0), animated: false, scrollPosition: self.direction == .vertical ? .centeredVertically : .centeredHorizontally)
+            [weak self] in
+            if let weakSelf = self, weakSelf.totalCount != 0 {
+                weakSelf.collectionView.selectItem(at: IndexPath.init(row: 1, section: 0), animated: false, scrollPosition: weakSelf.direction.scrollPosition)
             }
         }
     }
@@ -152,7 +180,7 @@ open class VTAutoSlideView: UIView {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.minimumLineSpacing = 0
         flowLayout.minimumInteritemSpacing = 0
-        flowLayout.scrollDirection = direction.toCollectionViewScrollDirection()
+        flowLayout.scrollDirection = direction.collectionViewScrollDirection
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.isPagingEnabled = true
@@ -192,7 +220,7 @@ open class VTAutoSlideView: UIView {
     
     @objc fileprivate func autoChangeCell() {
         if let currentIndex = collectionView.indexPathsForVisibleItems.first {
-            collectionView.scrollToItem(at: currentIndex + 1, at: direction == .vertical ? .centeredVertically : .centeredHorizontally, animated: true)
+            collectionView.scrollToItem(at: currentIndex + 1, at: direction.scrollPosition, animated: true)
         }
         setupTimer()
     }
