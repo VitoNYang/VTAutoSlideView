@@ -4,7 +4,7 @@
 [![Version](https://img.shields.io/cocoapods/l/VTAutoSlideView.svg?style=flat)](https://github.com/VitoNYang/VTAutoSlideView/blob/master/LICENSE)
 
 ### 无论是在新闻 APP、商城 APP、音乐APP还是社交 APP，我们经常能看到一种视图——无限循环滚动视图😆。
-####这类视图通常用来展示照片、新闻、商品，常用度相信不用我再做过多阐述了🙂。所以这也是 *VTAutoSlideView* 产生的原因，接下来让我们看看怎么使用吧😊
+#### 这类视图通常用来展示照片、新闻、商品，常用度相信不用我再做过多阐述了🙂。所以这也是 *VTAutoSlideView* 产生的原因，接下来让我们看看怎么使用吧😊
 ![SampleGif](SampleImage/sample.gif)
 
 ## 要求
@@ -14,12 +14,12 @@
 
 
 ## 安装
-####CocoaPods
+#### CocoaPods
 - 添加 `pod 'VTAutoSlideView'` 到你的 Podfile中.
 - 运行 `pod install` 或者 `pod update`
 
 ## 快速上手
-####Storyboard / Xib (用Storyboard 或者 Xib创建现仅支持横向轮播)
+#### Storyboard / Xib (用Storyboard 或者 Xib创建现仅支持横向轮播)
 
 1. 在 Storyboard 或 Xib 中拉一个 View， 设置改 View 为 VTAutoSlideView
 2. 创建一个 UICollectionViewCell，并设置自己的布局
@@ -61,7 +61,7 @@
 	```
 5.  现在你可以 Run 你的项目了，如果一切都没有设置错的话，应该就可以成功的跑起来了🍻🍻
 
-###Code
+### Code
 1. 创建 VTAutoSlideView，设置横向还是纵向，同时设置`dataSource`
 `let slideView = VTAutoSlideView(direction: .vertical, dataSource: self)`
 2. 注册 Cell，设置 dataList
