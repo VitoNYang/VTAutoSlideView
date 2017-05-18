@@ -71,10 +71,13 @@ open class VTAutoSlideView: UIView {
             }
             DispatchQueue.main.async {
                 [weak self] in
-                if let weakSelf = self{
-                    weakSelf.collectionView.selectItem(at: indexPathForVisibleItem, animated: false, scrollPosition: weakSelf.direction.scrollPosition)
-                    weakSelf.setupTimer()
-                }
+                guard let strongSelf = self else { return }
+                strongSelf
+                    .collectionView
+                    .selectItem(at: indexPathForVisibleItem,
+                                animated: false,
+                                scrollPosition: strongSelf.direction.scrollPosition)
+                strongSelf.setupTimer()
             }
         }
     }
@@ -111,8 +114,9 @@ open class VTAutoSlideView: UIView {
         }
     }
     
+    /// 当数据多于一个的时候才允许滚动
     fileprivate var totalCount: Int {
-        return dataList.count > 0 ? dataList.count + 2 : 0
+        return dataList.count > 1 ? dataList.count + 2 : dataList.count
     }
     
     // MARK: Lift Cycle
@@ -139,9 +143,13 @@ open class VTAutoSlideView: UIView {
         super.willMove(toSuperview: newSuperview)
         DispatchQueue.main.async {
             [weak self] in
-            if let weakSelf = self, weakSelf.totalCount != 0 {
-                weakSelf.collectionView.selectItem(at: IndexPath.init(row: 1, section: 0), animated: false, scrollPosition: weakSelf.direction.scrollPosition)
-            }
+            guard let strongSelf = self,
+                strongSelf.totalCount > 1 else { return }
+            strongSelf
+                .collectionView
+                .selectItem(at: IndexPath(row: 1, section: 0),
+                            animated: false,
+                            scrollPosition: strongSelf.direction.scrollPosition)
         }
     }
     
@@ -202,13 +210,16 @@ open class VTAutoSlideView: UIView {
     
     fileprivate func setupTimer() {
         DispatchQueue.main.async { [weak self] in
-            if let weakSelf = self {
-                weakSelf.invalidateTimer()
-                if weakSelf.activated {
-                    let timer = Timer(timeInterval: weakSelf.autoChangeTime, target: weakSelf, selector: #selector(weakSelf.autoChangeCell), userInfo: nil, repeats: false)
-                    RunLoop.main.add(timer, forMode: .commonModes)
-                    weakSelf.timer = timer
-                }
+            guard let strongSelf = self else { return }
+            strongSelf.invalidateTimer()
+            if strongSelf.activated && strongSelf.dataList.count > 1{
+                let timer = Timer(timeInterval: strongSelf.autoChangeTime,
+                                  target: strongSelf,
+                                  selector: #selector(strongSelf.autoChangeCell),
+                                  userInfo: nil,
+                                  repeats: false)
+                RunLoop.main.add(timer, forMode: .commonModes)
+                strongSelf.timer = timer
             }
         }
     }
