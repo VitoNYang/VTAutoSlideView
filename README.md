@@ -24,7 +24,7 @@
 2. 创建一个 UICollectionViewCell，并设置自己的布局
 3. 在 ViewController 注册你的 Cell, 并设置 VTAutoSlideView 的 `dataSource` 和 `dataList`
 
-		``` swift
+	``` swift
 	@IBOutlet weak var slideView: VTAutoSlideView!
 	    
 	// 你的数据源
