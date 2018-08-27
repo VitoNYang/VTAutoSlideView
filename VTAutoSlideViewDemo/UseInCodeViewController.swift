@@ -30,10 +30,13 @@ class UseInCodeViewController: UIViewController {
         slideView.translatesAutoresizingMaskIntoConstraints = false
         
         // add constraints
-        slideView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        slideView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor, constant: 20).isActive = true
-        slideView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        slideView.heightAnchor.constraint(equalToConstant: view.bounds.height * 0.5).isActive = true
+        NSLayoutConstraint.activate([
+            slideView.leadingAnchor.constraint(equalTo: view.safeLeadingAnchor),
+            slideView.topAnchor.constraint(equalTo: safeTopAnchor, constant: 20),
+            slideView.trailingAnchor.constraint(equalTo: view.safeTrailingAnchor),
+            slideView.heightAnchor.constraint(equalToConstant: view.bounds.height * 0.5)
+            ])
+        
     }
 
 }
@@ -45,5 +48,49 @@ extension UseInCodeViewController: VTAutoSlideViewDataSource {
             return
         }
         cell.imageView.image = imageList[index]
+    }
+}
+
+extension UIViewController {
+    var safeTopAnchor: NSLayoutYAxisAnchor {
+        if #available(iOS 11.0, *) {
+            return view.safeAreaLayoutGuide.topAnchor
+        } else {
+            return topLayoutGuide.bottomAnchor
+        }
+    }
+}
+
+extension UIView {
+    var safeTopAnchor: NSLayoutYAxisAnchor {
+        if #available(iOS 11.0, *) {
+            return self.safeAreaLayoutGuide.topAnchor
+        } else {
+            return self.topAnchor
+        }
+    }
+    
+    var safeBottomAnchor: NSLayoutYAxisAnchor {
+        if #available(iOS 11.0, *) {
+            return self.safeAreaLayoutGuide.bottomAnchor
+        } else {
+            return self.bottomAnchor
+        }
+    }
+    
+    var safeLeadingAnchor: NSLayoutXAxisAnchor {
+        if #available(iOS 11.0, *) {
+            return self.safeAreaLayoutGuide.leadingAnchor
+        } else {
+            return self.leadingAnchor
+        }
+    }
+    
+    var safeTrailingAnchor: NSLayoutXAxisAnchor {
+        if #available(iOS 11.0, *) {
+            return self.safeAreaLayoutGuide.trailingAnchor
+        } else {
+            return self.trailingAnchor
+        }
     }
 }

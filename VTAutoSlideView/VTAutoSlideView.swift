@@ -199,10 +199,13 @@ open class VTAutoSlideView: UIView {
         collectionView.showsHorizontalScrollIndicator = false
         self.addSubview(collectionView)
         
-        collectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-        collectionView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        collectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-        collectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        NSLayoutConstraint.activate([
+            collectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            collectionView.topAnchor.constraint(equalTo: self.topAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+            ])
+        
         
         
         self.collectionView = collectionView
@@ -269,6 +272,10 @@ extension VTAutoSlideView {
             offset = scrollView.contentOffset.y
             contentWidth = scrollView.contentSize.height
             cellWidth = scrollView.bounds.height
+        }
+        
+        guard cellWidth > 0 else {
+            return
         }
         
         if offset <= 0 {
