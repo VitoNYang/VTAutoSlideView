@@ -17,8 +17,8 @@ class UseInCodeViewController: UIViewController {
     }()
     
     lazy var imageList = {
-        // flatMap 不同于 map 的是, flatMap 会筛选非空元素
-        (1...4).flatMap { UIImage(named: "0\($0)") }
+        // compactMap 不同于 map 的是, compactMap 会筛选非空元素
+        (1...4).compactMap { UIImage(named: "0\($0)") }
     }()
     
     override func viewDidLoad() {

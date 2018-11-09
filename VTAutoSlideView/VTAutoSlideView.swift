@@ -13,7 +13,7 @@ public enum VTDirection: Int {
     case horizontal
     case vertical
    
-    var collectionViewScrollDirection: UICollectionViewScrollDirection {
+    var collectionViewScrollDirection: UICollectionView.ScrollDirection {
         switch self {
         case .horizontal:
             return .horizontal
@@ -22,7 +22,7 @@ public enum VTDirection: Int {
         }
     }
     
-    var scrollPosition: UICollectionViewScrollPosition {
+    var scrollPosition: UICollectionView.ScrollPosition {
         switch self {
         case .horizontal:
             return .centeredHorizontally
@@ -221,7 +221,7 @@ open class VTAutoSlideView: UIView {
                                   selector: #selector(strongSelf.autoChangeCell),
                                   userInfo: nil,
                                   repeats: false)
-                RunLoop.main.add(timer, forMode: .commonModes)
+                RunLoop.main.add(timer, forMode: .common)
                 strongSelf.timer = timer
             }
         }
