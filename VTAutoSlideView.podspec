@@ -16,6 +16,6 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/VitoNYang/VTAutoSlideView.git", :tag => "#{s.version}" }
   s.platform     = :ios
   s.ios.deployment_target = '9.0'
-  s.source_files = "VTAutoSlideView", "VTAutoSlideView/*{.plist,h,swift}"
+  s.source_files = "VTAutoSlideView", "VTAutoSlideView/*{h,swift}"
 
 end
