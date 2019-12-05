@@ -1,15 +1,16 @@
 # VTAutoSlideView
-![Version](https://img.shields.io/cocoapods/v/VTAutoSlideView.svg?style=flat)
+![Framework Version](https://img.shields.io/cocoapods/v/VTAutoSlideView.svg?style=flat)
 ![Version](https://img.shields.io/cocoapods/p/VTAutoSlideView.svg?style=flat)
-[![Version](https://img.shields.io/cocoapods/l/VTAutoSlideView.svg?style=flat)](https://github.com/VitoNYang/VTAutoSlideView/blob/master/LICENSE)
+[![License](https://img.shields.io/cocoapods/l/VTAutoSlideView.svg?style=flat)](https://github.com/VitoNYang/VTAutoSlideView/blob/master/LICENSE)
+![Swift Version](https://img.shields.io/badge/swift-5.0-orange.svg)
 
 ### 无论是在新闻 APP、商城 APP、音乐APP还是社交 APP，我们经常能看到一种视图——无限循环滚动视图😆。
 #### 这类视图通常用来展示照片、新闻、商品，常用度相信不用我再做过多阐述了🙂。所以这也是 *VTAutoSlideView* 产生的原因，接下来让我们看看怎么使用吧😊
 
 ## 要求
 - iOS 9.0+
-- Xcode 8.0+
-- Swift 3.0+
+- Xcode 11.0+
+- Swift 5.0+
 
 
 ## 安装
@@ -81,7 +82,8 @@
 3. 实现 VTAutoSlideViewDataSource 的 configuration(cell:for) 方法，配置你的 cell (参考 Storyboard / Xib 中的代码)
 4. 没有配置错的话，一切也已经可以正常运行起来了。
 
-## Demo
+## Update Note
+* 更新至 05/12/2019。更新至Swift 5, 同时添加了Github workflows 来做持续集成。
 * 更新至 27/08/2018。 修复了一个会导致crash的bug , 修改demo 适配iPhone X。
 * 更新至 18/05/2017。 修改了如果只有一张图片的时候不允许轮播。
 * 更新至 28/03/2017。 添加了当 CollectionView 的 bounds 发生改变后的处理, 比如说屏幕旋转。
