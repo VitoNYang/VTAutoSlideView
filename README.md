@@ -3,6 +3,7 @@
 ![Version](https://img.shields.io/cocoapods/p/VTAutoSlideView.svg?style=flat)
 [![License](https://img.shields.io/cocoapods/l/VTAutoSlideView.svg?style=flat)](https://github.com/VitoNYang/VTAutoSlideView/blob/master/LICENSE)
 ![Swift Version](https://img.shields.io/badge/swift-5.0-orange.svg)
+![Build Status](https://github.com/VitoNYang/VTAutoSlideView/workflows/Build/badge.svg)
 
 ### 无论是在新闻 APP、商城 APP、音乐APP还是社交 APP，我们经常能看到一种视图——无限循环滚动视图😆。
 #### 这类视图通常用来展示照片、新闻、商品，常用度相信不用我再做过多阐述了🙂。所以这也是 *VTAutoSlideView* 产生的原因，接下来让我们看看怎么使用吧😊
