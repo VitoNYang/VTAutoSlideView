@@ -32,6 +32,11 @@ public enum VTDirection: Int {
     }
 }
 
+public enum VTSlideMode {
+    case manual
+    case autoSlide(duration: TimeInterval)
+}
+
 // MARK: - VTAutoSlideViewDataSource
 @objc public protocol VTAutoSlideViewDataSource: NSObjectProtocol {
     func configuration(cell: UICollectionViewCell, for index: Int)
@@ -47,11 +52,10 @@ public enum VTDirection: Int {
 
 // MARK: - VTAutoSlideView
 open class VTAutoSlideView: UIView {
-    
+    // MARK: Private Property
     /// reuse identifier
-    fileprivate static let cellIdentifier = "VTAutoSlideViewCell"
-    
-    fileprivate weak var collectionView: UICollectionView!
+    private static let cellIdentifier = "VTAutoSlideViewCell"
+    private weak var collectionView: UICollectionView!
     
     /// Slide View Scroll Direction, default is horizontal
     private(set) var direction: VTDirection
@@ -61,42 +65,70 @@ open class VTAutoSlideView: UIView {
     
     private var timer: Timer?
     
+    /// 当数据多于一个的时候才允许滚动
+    private var totalCount: Int {
+        return dataList.count > 1 ? dataList.count + 2 : dataList.count
+    }
+    
+    private var autoSlideDuration: TimeInterval {
+        if case let .autoSlide(duration) = slideMode {
+            return duration
+        } else {
+            return 0
+        }
+    }
+    
+    // MARK: Public Property
     open override var bounds: CGRect {
         didSet {
+            guard bounds != oldValue else { return }
             // bounds change handle
-            invalidateTimer()
             collectionView.collectionViewLayout.invalidateLayout()
             guard let indexPathForVisibleItem = collectionView.indexPathsForVisibleItems.first else {
                 return
             }
-            DispatchQueue.main.async {
+            runOnMainThread {
                 [weak self] in
-                guard let strongSelf = self else { return }
-                strongSelf
-                    .collectionView
+                guard let self else { return }
+                self.collectionView
                     .selectItem(at: indexPathForVisibleItem,
                                 animated: false,
-                                scrollPosition: strongSelf.direction.scrollPosition)
-                strongSelf.setupTimer()
+                                scrollPosition: self.direction.scrollPosition)
+                self.setupTimerIfNeeded()
             }
         }
     }
     
-    /// 自动轮播的间距
-    public var autoChangeTime: TimeInterval = 3 {
+    public var slideMode: VTSlideMode = .autoSlide(duration: 3) {
         didSet {
-            setupTimer()
-        }
-    }
-    
-    /// 控制是否开启自动轮播，默认是 true
-    public var activated = true {
-        didSet {
-            if activated {
-                setupTimer()
-            } else {
+            switch slideMode {
+            case .manual:
                 invalidateTimer()
+            case .autoSlide:
+                setupTimerIfNeeded()
             }
+        }
+    }
+    
+    public var isAutoSlide: Bool {
+        if autoSlideDuration > 0 {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    public var currentIndex: Int = 0 {
+        didSet {
+            guard currentIndex != oldValue else { return }
+            delegate?.slideView?(self, currentIndex: currentIndex)
+//            guard dataList.count > 1 else { return }
+//            invalidateTimer()
+//            collectionView
+//                .selectItem(at: IndexPath(item: currentIndex + 1, section: 0),
+//                            animated: false,
+//                            scrollPosition: direction.scrollPosition)
+//            setupTimerIfNeeded()
         }
     }
     
@@ -107,16 +139,9 @@ open class VTAutoSlideView: UIView {
     /// 需要展示的数据源
     public var dataList = [Any]() {
         didSet {
-            guard isRegisterCell else {
-                fatalError("必须先调用register(cellClass:) 或 register(nib:)方法")
-            }
+            precondition(isRegisterCell, "必须先调用register(cellClass:) 或 register(nib:)方法")
             collectionView.reloadData()
         }
-    }
-    
-    /// 当数据多于一个的时候才允许滚动
-    fileprivate var totalCount: Int {
-        return dataList.count > 1 ? dataList.count + 2 : dataList.count
     }
     
     // MARK: Lift Cycle
@@ -141,30 +166,32 @@ open class VTAutoSlideView: UIView {
     
     open override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
-        DispatchQueue.main.async {
+        print("will move")
+        guard newSuperview != nil else { return }
+        runOnMainThread {
             [weak self] in
-            guard let strongSelf = self,
-                strongSelf.totalCount > 1 else { return }
-            strongSelf
-                .collectionView
-                .selectItem(at: IndexPath(row: 1, section: 0),
+            guard let self, self.totalCount > 1 else { return }
+            self.collectionView
+                .selectItem(at: IndexPath(item: 1, section: 0),
                             animated: false,
-                            scrollPosition: strongSelf.direction.scrollPosition)
+                            scrollPosition: self.direction.scrollPosition)
         }
     }
     
     open override func removeFromSuperview() {
         super.removeFromSuperview()
+        
         invalidateTimer()
     }
     
     open override func didMoveToSuperview() {
         super.didMoveToSuperview()
         
-        setupTimer()
+        print("move to superview")
+        setupTimerIfNeeded()
     }
     
-    // MARK: Custom function
+    // MARK: Public function
     
     /// register either a class or a nib from which to instantiate a cell
     open func register(cellClass: Swift.AnyClass?) {
@@ -183,7 +210,7 @@ open class VTAutoSlideView: UIView {
         isRegisterCell = true
     }
     
-    
+    // MARK: Private function
     private func setupCollectionView() {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.minimumLineSpacing = 0
@@ -197,58 +224,58 @@ open class VTAutoSlideView: UIView {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
-        self.addSubview(collectionView)
+        addSubview(collectionView)
         
         NSLayoutConstraint.activate([
-            collectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            collectionView.topAnchor.constraint(equalTo: self.topAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            collectionView.topAnchor.constraint(equalTo: topAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
             ])
-        
-        
         
         self.collectionView = collectionView
     }
     
-    fileprivate func setupTimer() {
-        DispatchQueue.main.async { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.invalidateTimer()
-            if strongSelf.activated && strongSelf.dataList.count > 1{
-                let timer = Timer(timeInterval: strongSelf.autoChangeTime,
-                                  target: strongSelf,
-                                  selector: #selector(strongSelf.autoChangeCell),
-                                  userInfo: nil,
-                                  repeats: false)
-                RunLoop.main.add(timer, forMode: .common)
-                strongSelf.timer = timer
-            }
+    @MainActor private func setupTimerIfNeeded() {
+        invalidateTimer()
+        guard superview != nil, autoSlideDuration > 0, dataList.count > 1 else {
+            return
         }
+        let timer = Timer(timeInterval: autoSlideDuration,
+                          target: self,
+                          selector: #selector(slideCellToNext),
+                          userInfo: nil,
+                          repeats: false)
+        RunLoop.main.add(timer, forMode: .common)
+        self.timer = timer
     }
     
-    fileprivate func invalidateTimer() {
+    private func invalidateTimer() {
         timer?.invalidate()
         timer = nil
     }
     
-    @objc fileprivate func autoChangeCell() {
+    private func runOnMainThread(_ action: @escaping () -> Void) {
+        DispatchQueue.main.async(execute: action)
+    }
+    
+    @objc private func slideCellToNext() {
         if let currentIndex = collectionView.indexPathsForVisibleItems.first {
             collectionView.scrollToItem(at: currentIndex + 1, at: direction.scrollPosition, animated: true)
         }
-        setupTimer()
+        setupTimerIfNeeded()
     }
     
     /// Converting the indexPath to dataList's real index
-    fileprivate func currentIndex(indexPath: IndexPath) -> Int {
+    private func currentIndex(indexPath: IndexPath) -> Int {
         var currentIndex: Int
-        switch indexPath.row {
+        switch indexPath.item {
         case 0:
             currentIndex = dataList.count - 1
         case totalCount - 1:
             currentIndex = 0
         default:
-            currentIndex = indexPath.row - 1
+            currentIndex = indexPath.item - 1
         }
         return currentIndex
     }
@@ -298,28 +325,27 @@ extension VTAutoSlideView {
             }
             
             collectionView.setContentOffset(targetContentOffset, animated: false)
-            
         }
         
         var currentIndex = Int(round(offset / cellWidth))
-        if currentIndex == 0{
+        if currentIndex == 0 {
             currentIndex = dataList.count - 1
         } else if currentIndex == totalCount - 1 {
             currentIndex = 0
         } else {
             currentIndex -= 1
         }
-        delegate?.slideView?(self, currentIndex: currentIndex)
+        self.currentIndex = currentIndex
     }
     
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         guard scrollView == collectionView else { return }
-        setupTimer()
+        setupTimerIfNeeded()
     }
     
     public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         guard scrollView == collectionView else { return }
-        setupTimer()
+        setupTimerIfNeeded()
     }
     
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -362,6 +388,6 @@ extension VTAutoSlideView: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: - Common function
-func +(lhs: IndexPath, rhs: Int) -> IndexPath{
+func + (lhs: IndexPath, rhs: Int) -> IndexPath{
     return IndexPath(item: lhs.item + rhs, section: lhs.section)
 }

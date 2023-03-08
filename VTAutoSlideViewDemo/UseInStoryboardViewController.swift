@@ -26,7 +26,7 @@ class UseInStoryboardViewController: UIViewController {
             slideView.dataSource = self
             slideView.delegate = self
             slideView.dataList = imageList
-            slideView.autoChangeTime = 1
+            slideView.slideMode = .autoSlide(duration: 3)
         }
         
         func setupPageControl() {
@@ -55,6 +55,7 @@ extension UseInStoryboardViewController: VTAutoSlideViewDelegate {
     
     func slideView(_ slideView: VTAutoSlideView, currentIndex: Int) {
         pageControl.currentPage = currentIndex
+        print(currentIndex)
     }
 }
 

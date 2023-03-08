@@ -25,7 +25,7 @@ class UseInCodeViewController: UIViewController {
         super.viewDidLoad()
         slideView.register(nib: UINib(nibName: "DisplayImageCell", bundle: nibBundle))
         slideView.dataList = imageList
-        slideView.activated = false // 关闭自动轮播功能
+        slideView.slideMode = .manual
         view.addSubview(slideView)
         slideView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -53,11 +53,7 @@ extension UseInCodeViewController: VTAutoSlideViewDataSource {
 
 extension UIViewController {
     var safeTopAnchor: NSLayoutYAxisAnchor {
-        if #available(iOS 11.0, *) {
-            return view.safeAreaLayoutGuide.topAnchor
-        } else {
-            return topLayoutGuide.bottomAnchor
-        }
+        view.safeTopAnchor
     }
 }
 
