@@ -3,7 +3,7 @@
 //  VTAutoSlideView
 //
 //  Created by hao Mac Mini on 2017/2/8.
-//  Copyright © 2017年 Vito. All rights reserved.
+//  Copyright © 2023 Vito. All rights reserved.
 //
 
 import UIKit

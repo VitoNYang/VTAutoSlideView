@@ -3,7 +3,7 @@
 //  VTAutoSlideView
 //
 //  Created by hao on 2017/2/6.
-//  Copyright © 2017年 Vito. All rights reserved.
+//  Copyright © 2023 Vito. All rights reserved.
 //
 
 import UIKit
@@ -122,13 +122,6 @@ open class VTAutoSlideView: UIView {
         didSet {
             guard currentIndex != oldValue else { return }
             delegate?.slideView?(self, currentIndex: currentIndex)
-//            guard dataList.count > 1 else { return }
-//            invalidateTimer()
-//            collectionView
-//                .selectItem(at: IndexPath(item: currentIndex + 1, section: 0),
-//                            animated: false,
-//                            scrollPosition: direction.scrollPosition)
-//            setupTimerIfNeeded()
         }
     }
     
@@ -171,8 +164,10 @@ open class VTAutoSlideView: UIView {
         runOnMainThread {
             [weak self] in
             guard let self, self.totalCount > 1 else { return }
+            let targetIndexPath = IndexPath(item: 1, section: 0)
+            guard self.isValidIndexPath(targetIndexPath) else { return }
             self.collectionView
-                .selectItem(at: IndexPath(item: 1, section: 0),
+                .selectItem(at: targetIndexPath,
                             animated: false,
                             scrollPosition: self.direction.scrollPosition)
         }
@@ -259,9 +254,18 @@ open class VTAutoSlideView: UIView {
         DispatchQueue.main.async(execute: action)
     }
     
+    private func isValidIndexPath(_ indexPath: IndexPath) -> Bool {
+        guard collectionView.numberOfSections > indexPath.section else { return false }
+        guard collectionView.numberOfItems(inSection: indexPath.section) > indexPath.item else { return false }
+        return true
+    }
+    
     @objc private func slideCellToNext() {
         if let currentIndex = collectionView.indexPathsForVisibleItems.first {
-            collectionView.scrollToItem(at: currentIndex + 1, at: direction.scrollPosition, animated: true)
+            let targetIndexPath = currentIndex + 1
+            if isValidIndexPath(targetIndexPath) {
+                collectionView.scrollToItem(at: targetIndexPath, at: .centeredHorizontally, animated: true)
+            }
         }
         setupTimerIfNeeded()
     }
