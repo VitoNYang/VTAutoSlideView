@@ -1,8 +1,8 @@
 # VTAutoSlideView
-![Framework Version](https://img.shields.io/cocoapods/v/VTAutoSlideView.svg?style=flat)
+![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/VitoNYang/VTAutoSlideView)
 ![Version](https://img.shields.io/cocoapods/p/VTAutoSlideView.svg?style=flat)
-[![License](https://img.shields.io/cocoapods/l/VTAutoSlideView.svg?style=flat)](https://github.com/VitoNYang/VTAutoSlideView/blob/master/LICENSE)
-![Swift Version](https://img.shields.io/badge/swift-5.0-orange.svg)
+![GitHub](https://img.shields.io/github/license/VitoNYang/VTAutoSlideView)
+![Swift Version](https://img.shields.io/badge/swift-5.7-orange.svg)
 ![Build Status](https://github.com/VitoNYang/VTAutoSlideView/workflows/Build/badge.svg)
 
 ### A Common Slide View (aka. Carousel) build by UICollectionView.
@@ -88,7 +88,8 @@
 3. 实现 VTAutoSlideViewDataSource 的 configuration(cell:for) 方法，配置你的 cell (参考 Storyboard / Xib 中的代码)
 4. 没有配置错的话，一切也已经可以正常运行起来了。
 
-## Update Note
+## Update Notes
+* Updated at 01/04/2023: Fixed a potential crash issue.
 * 更新至 08/03/2023。 Support SPM, and update to Swift 5.7, the minimum support iOS version update to iOS 11。
 * 更新至 05/12/2019。 更新至Swift 5, 同时添加了Github workflows 来做持续集成。
 * 更新至 27/08/2018。 修复了一个会导致crash的bug , 修改demo 适配iPhone X。
